@@ -1,0 +1,124 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cabtest</title>
+    <script type="text/javascript" src="{% static "d3/d3.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "jquery/jquery-2.2.0.js" %}"></script>
+    <script language="JavaScript">
+
+        $( document ).ready(function() {
+            var cabdata = [
+                {"name": "tsw01a", "ru": 1, "ru_height": 1},
+                {"name": "tsw01b", "ru": 8, "ru_height": 1},
+                {"name": "asw01a", "ru": 16, "ru_height": 2},
+                {"name": "ts01", "ru": 22, "ru_height": 1},
+                {"name": "csw01a", "ru": 24, "ru_height": 6},
+                {"name": "csw01b", "ru": 32, "ru_height": 6}
+            ];
+            var cab_max_ru = 45;
+
+            function range(start, stop, step){
+                var a=[start], b=start;
+                while(b<stop){b+=step;a.push(b)}
+                return a;
+            }
+
+            var rudata = range(1, cab_max_ru, 1);
+            console.log(rudata);
+
+            var container_height = 800;
+            var container_width = 300;
+            var cab_height = container_height;
+            var cab_width = container_width - 35;
+            console.log("cab " + cab_width + "x" + cab_height);
+            console.log("container " + container_width + "x" + container_height);
+            var rectangle_height = cab_height / cab_max_ru;
+
+            function get_text_position(somedata){
+                var this_rectangle_height = somedata.ru_height * rectangle_height;
+                var half_of_this_rectangle_height = this_rectangle_height / 2;
+                return get_rectangle_y(somedata) + half_of_this_rectangle_height;
+            }
+
+            function get_rectangle_y(somedata){
+                return cab_height - (((somedata.ru * rectangle_height) - rectangle_height) + get_rectangle_height(somedata));
+            }
+
+            function get_rectangle_height(somedata){
+                return rectangle_height * somedata.ru_height;
+            }
+
+            var svgContainer = d3.select("body").append("svg")
+                    .attr("width", container_width)
+                    .attr("height", container_height);
+
+            var rectangles = svgContainer.selectAll("rect")
+                    .data(cabdata)
+                    .enter()
+                    .append("rect");
+
+            var rectangleAttributes = rectangles
+                    .attr("width", cab_width)
+                    .attr("height", function(d){return rectangle_height * d.ru_height;})
+                    .attr("x", 0)
+                    .attr("y", function(d){return get_rectangle_y(d);})
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 2)
+                    .style("fill", "#B0C4DE");
+
+            var textSelections = svgContainer.selectAll("text.device_labels")
+                    .data(cabdata)
+                    .enter()
+                    .append("text")
+                    .attr("class", "device_labels");
+
+            var textLabels = textSelections
+                    .attr("x", 75)
+                    .attr("y", function(d){return get_text_position(d);})
+                    .text(function(d){return d.name;})
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "10px")
+                    .attr("fill", "black");
+
+            var textRUSelections = svgContainer.selectAll("text.ru_labels")
+                    .data(rudata)
+                    .enter()
+                    .insert("text")
+                    .attr("class", "ru_labels");
+
+            var textRULabels = textRUSelections
+                    .attr("x", container_width - (container_width - cab_width) + 10)
+                    .attr("y", function(d){return cab_height - (d * rectangle_height) + rectangle_height;})
+                    .text(function(d){return d;})
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "10px")
+                    .attr("fill", "black");
+
+            var cabBorderPath = svgContainer.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("height", cab_height)
+                    .attr("width", cab_width)
+                    .style("stroke", "black")
+                    .style("fill", "none")
+                    .style("stroke-width", 3);
+
+            var containerBorderPath = svgContainer.append("rect")
+                    .attr("x", 0)
+                    .attr("y", 0)
+                    .attr("height", container_height)
+                    .attr("width", container_width)
+                    .style("stroke", "black")
+                    .style("fill", "none")
+                    .style("stroke-width", 6);
+        });
+    </script>
+
+</head>
+<body>
+this is cabtest 101
+
+</body>
+</html>
