@@ -28,8 +28,8 @@
             var rudata = range(1, cab_max_ru, 1);
             console.log(rudata);
 
-            var container_height = 800;
-            var container_width = 300;
+            var container_height = 1000;
+            var container_width = 500;
             var cab_height = container_height;
             var cab_width = container_width - 35;
             console.log("cab " + cab_width + "x" + cab_height);
@@ -75,7 +75,7 @@
                     .attr("class", "device_labels");
 
             var textLabels = textSelections
-                    .attr("x", 75)
+                    .attr("x", cab_width/2 - cab_width/16)
                     .attr("y", function(d){return get_text_position(d);})
                     .text(function(d){return d.name;})
                     .attr("font-family", "sans-serif")
@@ -90,7 +90,7 @@
 
             var textRULabels = textRUSelections
                     .attr("x", container_width - (container_width - cab_width) + 10)
-                    .attr("y", function(d){return cab_height - (d * rectangle_height) + rectangle_height;})
+                    .attr("y", function(d){return cab_height - (d * rectangle_height) + rectangle_height/2;})
                     .text(function(d){return d;})
                     .attr("font-family", "sans-serif")
                     .attr("font-size", "10px")
